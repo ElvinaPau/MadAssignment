@@ -13,6 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainAdapter extends FirebaseRecyclerAdapter<MainModel,MainAdapter.myViewHolder> {
 
@@ -22,8 +27,12 @@ public class MainAdapter extends FirebaseRecyclerAdapter<MainModel,MainAdapter.m
      *
      * @param options
      */
-    public MainAdapter(@NonNull FirebaseRecyclerOptions<MainModel> options) {
+    private String rewardKey;
+    String headerFromDB, desFromDB, pointFromDB;
+
+    public MainAdapter(@NonNull FirebaseRecyclerOptions<MainModel> options, String rewardKey) {
         super(options);
+        this.rewardKey = rewardKey;
     }
 
     @Override
@@ -53,6 +62,8 @@ public class MainAdapter extends FirebaseRecyclerAdapter<MainModel,MainAdapter.m
         TextView name, description, validity, point;
         Button redeem;
 
+        DatabaseReference reference;
+
 
         public myViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -63,6 +74,29 @@ public class MainAdapter extends FirebaseRecyclerAdapter<MainModel,MainAdapter.m
             validity = (TextView) itemView.findViewById(R.id.Re_validity);
             point = (TextView) itemView.findViewById(R.id.Reward_point);
             redeem = (Button) itemView.findViewById(R.id.redeem_button);
+            reference = FirebaseDatabase.getInstance().getReference("Reward");
+
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String key = snapshot.getKey();
+                        headerFromDB = snapshot.child("name").getValue(String.class);
+                        desFromDB = snapshot.child("description").getValue(String.class);
+                        pointFromDB = snapshot.child("point").getValue(String.class);
+
+                        // Now you can use the retrieved values as needed
+                        name.setText(headerFromDB);
+                        description.setText(desFromDB);
+                        point.setText(pointFromDB);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Handle errors here
+                }
+            });
         }
     }
 }
