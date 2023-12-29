@@ -3,6 +3,9 @@ package com.example.rewards;
 public class RewardHelperClass {
     String name, description, point;
 
+    public RewardHelperClass(){
+
+    }
 
     public RewardHelperClass(String name, String description, String point) {
         this.name = name;

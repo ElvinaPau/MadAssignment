@@ -22,82 +22,74 @@
             android:id="@+id/Reward_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/img1"
             android:text="Reward Name"
             android:textSize="15dp"
-            android:textStyle="bold"
-            android:layout_toRightOf="@id/img1"
-            android:layout_marginLeft="10dp"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/Title_Desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/Reward_name"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/img1"
             android:text="Description : "
             android:textSize="12dp"
-            android:textStyle="bold"
-            android:layout_toRightOf="@id/img1"
-            android:layout_below="@id/Reward_name"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="10dp"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/Re_Desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Details about the rewards"
-            android:textSize="12dp"
-            android:layout_toRightOf="@id/img1"
             android:layout_below="@id/Title_Desc"
+            android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
-            android:layout_marginLeft="10dp"/>
-
-        <TextView
-            android:id="@+id/Title_validity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Validity :"
-            android:textSize="12dp"
-            android:textStyle="bold"
             android:layout_toRightOf="@id/img1"
-            android:layout_below="@id/Re_Desc"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="10dp"/>
+            android:text="Details about the rewards"
+            android:textSize="12dp" />
 
-        <TextView
-            android:id="@+id/Re_validity"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Date"
-            android:textSize="12dp"
-            android:layout_toRightOf="@id/Title_validity"
-            android:layout_below="@id/Re_Desc"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="10dp"/>
-
-        <TextView
-            android:id="@+id/Reward_point"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="50 points"
-            android:textColor="@color/bluish_purple"
-            android:textSize="12dp"
-            android:textStyle="bold"
+            android:layout_below="@+id/Re_Desc"
             android:layout_toRightOf="@id/img1"
-            android:layout_below="@id/Re_validity"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="10dp"/>
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/redeem_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/img1"
-            android:layout_marginLeft="120dp"
-            android:layout_marginTop="110dp"
-            android:text="Redeem" />
+            <TextView
+                android:id="@+id/Reward_point"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:text="50"
+                android:textColor="@color/bluish_purple"
+                android:textSize="12dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/point_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:text="Points"
+                android:textColor="@color/bluish_purple"
+                android:textSize="12dp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/redeem_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:text="Redeem" />
+
+        </LinearLayout>
 
     </RelativeLayout>
-
 
 
 </androidx.cardview.widget.CardView>

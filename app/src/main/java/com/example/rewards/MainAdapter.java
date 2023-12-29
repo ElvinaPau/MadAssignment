@@ -30,24 +30,17 @@ public class MainAdapter extends FirebaseRecyclerAdapter<MainModel,MainAdapter.m
     private String rewardKey;
     String headerFromDB, desFromDB, pointFromDB;
 
-    public MainAdapter(@NonNull FirebaseRecyclerOptions<MainModel> options, String rewardKey) {
+    public MainAdapter(@NonNull FirebaseRecyclerOptions<MainModel> options) {
         super(options);
         this.rewardKey = rewardKey;
     }
 
     @Override
     protected void onBindViewHolder(@NonNull myViewHolder holder, int position, @NonNull MainModel model) {
-        holder.name.setText(model.getReward_name());
-        holder.description.setText(model.getRe_Desc());
-        holder.validity.setText(model.getRe_validity());
-        holder.point.setText(model.getReward_point());
-
-        Glide.with(holder.img.getContext())
-                .load(model.getImage())
-                .placeholder(com.google.firebase.database.R.drawable.common_google_signin_btn_icon_dark)
-                .error(com.google.android.gms.base.R.drawable.common_google_signin_btn_icon_dark_normal)
-                .into(holder.img);
+        // Bind data and pass the key for the current item
+        holder.bindData(getRef(position).getKey());
     }
+
 
     @NonNull
     @Override
@@ -56,7 +49,7 @@ public class MainAdapter extends FirebaseRecyclerAdapter<MainModel,MainAdapter.m
         return new myViewHolder(view);
     }
 
-    class myViewHolder extends RecyclerView.ViewHolder{
+    class myViewHolder extends RecyclerView.ViewHolder {
 
         ImageView img;
         TextView name, description, validity, point;
@@ -71,24 +64,38 @@ public class MainAdapter extends FirebaseRecyclerAdapter<MainModel,MainAdapter.m
             img = (ImageView) itemView.findViewById(R.id.img1);
             name = (TextView) itemView.findViewById(R.id.Reward_name);
             description = (TextView) itemView.findViewById(R.id.Re_Desc);
-            validity = (TextView) itemView.findViewById(R.id.Re_validity);
             point = (TextView) itemView.findViewById(R.id.Reward_point);
             redeem = (Button) itemView.findViewById(R.id.redeem_button);
             reference = FirebaseDatabase.getInstance().getReference("Reward");
+        }
 
-            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+        public void bindData (String rewardKey){
+            // Use the provided key to fetch data for the current item
+            reference.child(rewardKey).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        String key = snapshot.getKey();
-                        headerFromDB = snapshot.child("name").getValue(String.class);
-                        desFromDB = snapshot.child("description").getValue(String.class);
-                        pointFromDB = snapshot.child("point").getValue(String.class);
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    // Retrieve data specific to the current item
+                    RewardHelperClass model = snapshot.getValue(RewardHelperClass.class);
+                    MainModel model1 = snapshot.getValue(MainModel.class);
 
-                        // Now you can use the retrieved values as needed
-                        name.setText(headerFromDB);
-                        description.setText(desFromDB);
-                        point.setText(pointFromDB);
+                    if (model != null) {
+                        name.setText(model.getName());
+                        description.setText(model.getDescription());
+                        point.setText(model.getPoint());
+
+                        Glide.with(img.getContext())
+                                .load(model1.getImage())
+                                .placeholder(com.google.firebase.database.R.drawable.common_google_signin_btn_icon_dark)
+                                .error(com.google.android.gms.base.R.drawable.common_google_signin_btn_icon_dark_normal)
+                                .into(img);
+
+                        // Add any additional logic related to the redeemed button, if needed
+                        redeem.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // Handle button click
+                            }
+                        });
                     }
                 }
 
@@ -97,6 +104,9 @@ public class MainAdapter extends FirebaseRecyclerAdapter<MainModel,MainAdapter.m
                     // Handle errors here
                 }
             });
+
         }
+
+
     }
 }

@@ -1,5 +1,6 @@
 package com.example.rewards;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +36,51 @@ public class MainActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("Reward");
+
+
+        // Check if data already exists before adding sample data
+        checkForExistingData();
+
+        FirebaseRecyclerOptions<MainModel> options =
+                new FirebaseRecyclerOptions.Builder<MainModel>()
+                        .setQuery(FirebaseDatabase.getInstance().getReference().child("Reward"), MainModel.class)
+                        .build();
+
+        mainAdapter = new MainAdapter(options);
+        recyclerView.setAdapter(mainAdapter);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mainAdapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mainAdapter.stopListening();
+    }
+
+    private void checkForExistingData() {
+        // Check if data already exists based on some criteria
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    // Add sample data only if the "Reward" node is empty
+                    addSampleData();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle errors here
+            }
+        });
+    }
+    private void addSampleData() {
+
         String[] names = {
                 "5% off Zus Coffee",
                 "RM5 off Jaya Grocer",
@@ -51,34 +97,36 @@ public class MainActivity extends AppCompatActivity {
 
         String[] points = {"50", "100", "400", "1000"};
 
-        List<RewardHelperClass> rewards = new ArrayList<>();
-        String RewardKey = reference.push().getKey();
+//        List<RewardHelperClass> rewards = new ArrayList<>();
+//        String RewardKey = null;
 
         for (int i = 0; i < names.length; i++) {
+            String RewardKey = reference.push().getKey();
             RewardHelperClass helperClass = new RewardHelperClass(names[i], descriptions[i], points[i]);
-            rewards.add(helperClass);
+            //rewards.add(helperClass);
             reference.child(RewardKey).setValue(helperClass);
         }
 
 
-        FirebaseRecyclerOptions<MainModel> options =
-                new FirebaseRecyclerOptions.Builder<MainModel>()
-                        .setQuery(FirebaseDatabase.getInstance().getReference().child("Reward"), MainModel.class)
-                        .build();
 
-        mainAdapter = new MainAdapter(options, RewardKey);
-        recyclerView.setAdapter(mainAdapter);
+//        FirebaseRecyclerOptions<MainModel> options =
+//                new FirebaseRecyclerOptions.Builder<MainModel>()
+//                        .setQuery(FirebaseDatabase.getInstance().getReference().child("Reward"), MainModel.class)
+//                        .build();
+//
+//        mainAdapter = new MainAdapter(options, RewardKey);
+//        recyclerView.setAdapter(mainAdapter);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mainAdapter.startListening();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mainAdapter.stopListening();
-    }
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        mainAdapter.startListening();
+//    }
+//
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        mainAdapter.stopListening();
+//    }
 }
